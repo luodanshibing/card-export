@@ -1,0 +1,156 @@
+/* Card Export —— 导出弹窗的界面样式（卡片样式在 main.js 里，按主题注入） */
+
+.modal:has(.ce-modal) {
+  width: min(1080px, 94vw);
+  max-width: 94vw;
+}
+
+.ce-modal .ce-split {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.ce-modal .ce-left {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ce-modal .ce-panel {
+  flex: 0 0 330px;
+  max-height: 62vh;
+  overflow: auto;
+  padding-left: 14px;
+  border-left: 1px solid var(--background-modifier-border);
+}
+
+.ce-modal .ce-panel h4 {
+  margin: 14px 0 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  opacity: .55;
+}
+
+.ce-modal .ce-panel h4:first-child {
+  margin-top: 0;
+}
+
+.ce-modal .ce-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.ce-modal .ce-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.ce-modal .ce-field select {
+  max-width: 190px;
+}
+
+.ce-modal .ce-info {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.ce-modal .ce-stage {
+  background: var(--background-secondary);
+  border-radius: var(--radius-m, 8px);
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+  max-height: 56vh;
+}
+
+.ce-modal .ce-preview-box {
+  display: flex;
+  justify-content: center;
+}
+
+.ce-modal .ce-preview-holder {
+  position: relative;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .18);
+}
+
+.ce-modal .ce-preview-scale {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ce-modal .ce-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ce-modal .ce-pager {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.ce-modal .ce-pager span {
+  min-width: 54px;
+  text-align: center;
+}
+
+.ce-modal .ce-spacer {
+  flex: 1 1 auto;
+}
+
+.ce-modal .ce-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.ce-modal .ce-row label {
+  flex: 0 0 74px;
+  color: var(--text-muted);
+}
+
+.ce-modal .ce-row select,
+.ce-modal .ce-row input[type="text"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ce-modal .ce-row input[type="color"] {
+  width: 40px;
+  height: 24px;
+  padding: 0;
+  flex: 0 0 auto;
+}
+
+.ce-modal .ce-row input[type="range"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ce-modal .ce-row input[type="checkbox"] {
+  flex: 0 0 auto;
+}
+
+.ce-modal .ce-tip {
+  font-size: 11px;
+  opacity: .6;
+  margin-top: 10px;
+  line-height: 1.5;
+}

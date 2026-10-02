@@ -1,0 +1,9 @@
+{
+  "id": "card-export",
+  "name": "Card Export",
+  "version": "1.1.1",
+  "minAppVersion": "1.4.0",
+  "description": "把笔记导出成好看的卡片图片：15 套主题、5 种尺寸、背景自定义（纯色/渐变/纹理/图片）、头像与署名、整篇/选中/按标题切成多张；可存进库，也可另存到桌面等任意位置。零依赖，只读笔记。",
+  "author": "luodanshibing",
+  "isDesktopOnly": false
+}

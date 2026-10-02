@@ -1,0 +1,14 @@
+# 依赖目录（本项目无构建依赖，留着以防以后引入）
+node_modules/
+
+# 部署脚本产生的旧版备份
+_backup/
+
+# 预览页是生成物，由 tools/preview.mjs 随时重出（只提交截图）
+tools/preview.html
+
+# 系统 / 编辑器杂物
+Thumbs.db
+desktop.ini
+.DS_Store
+*.tmp
