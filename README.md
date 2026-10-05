@@ -195,3 +195,7 @@ node tools/preview.mjs    # 生成 tools/preview.html，打开就能对比 15 �
 2. **只用系统字体**：SVG 读不到主题里的 `@font-face`。
 3. 图片会内联成 dataURL，图多时更慢、更吃内存。
 4. `backdrop-filter`、CSS 动画、伪元素装饰在导出图里会被简化或丢弃（不影响排版）。
+
+### 许可证
+
+[MIT](LICENSE) © 2026 luodanshibing
