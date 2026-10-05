@@ -1,4 +1,4 @@
-# Card Export
+﻿# Card Export
 
 [English](#english) · [简体中文](#简体中文)
 
@@ -110,7 +110,7 @@ Known limitations, all inherent to that route:
 
 ### License
 
-No license file yet. MIT is the usual choice if you plan to submit to the community plugin list.
+[MIT](LICENSE) © 2026 luodanshibing
 
 ---
 
@@ -199,3 +199,4 @@ node tools/preview.mjs    # 生成 tools/preview.html，打开就能对比 15 �
 ### 许可证
 
 [MIT](LICENSE) © 2026 luodanshibing
+
