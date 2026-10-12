@@ -1,7 +1,7 @@
 'use strict';
 
 /* ==========================================================================
- * Card Export（卡片导出）v1.1.0
+ * Card Export（卡片导出）v1.2.0
  * --------------------------------------------------------------------------
  * 把笔记正文渲染成"漂亮卡片"并导出为 PNG。零依赖、只读笔记、从不改动内容。
  *
@@ -28,6 +28,7 @@ const {
   TFolder,
   MarkdownRenderer,
   normalizePath,
+  requestUrl,
 } = require('obsidian');
 
 /* ============================== 尺寸预设 ============================== */
@@ -727,6 +728,27 @@ async function fileToDataUrl(app, file) {
   return arrayBufferToDataUrl(buf, MIME_BY_EXT[ext] || 'image/png');
 }
 
+/** 图床/远程图片：requestUrl 走主进程、不受 CORS 限制，取回后转 dataURL（同 URL 会缓存） */
+const REMOTE_SRC_RE = /^(?:https?:)?\/\//i;
+const remoteImageCache = new Map();
+
+function extOfUrl(url) {
+  const clean = String(url).split('#')[0].split('?')[0];
+  const m = /\.([a-z0-9]+)$/i.exec(clean);
+  return m ? m[1].toLowerCase() : '';
+}
+
+async function remoteToDataUrl(url) {
+  if (remoteImageCache.has(url)) return remoteImageCache.get(url);
+  const res = await requestUrl({ url, method: 'GET' });
+  const raw = (res.headers && (res.headers['content-type'] || res.headers['Content-Type'])) || '';
+  const bare = raw.split(';')[0].trim();
+  const mime = /^image\//i.test(bare) ? bare : MIME_BY_EXT[extOfUrl(url)] || 'image/png';
+  const dataUrl = arrayBufferToDataUrl(res.arrayBuffer, mime);
+  remoteImageCache.set(url, dataUrl);
+  return dataUrl;
+}
+
 async function resolveVaultFile(app, linkOrPath) {
   const raw = String(linkOrPath || '').trim();
   if (!raw) return null;
@@ -743,6 +765,18 @@ async function inlineImages(root, app) {
   for (const img of imgs) {
     const src = img.getAttribute('src') || '';
     if (!src || src.startsWith('data:')) continue;
+    if (REMOTE_SRC_RE.test(src)) {
+      // 图床等远程图片：必须内联成 dataURL —— 序列化进 SVG 后浏览器不会去下载外部资源，
+      // 而且保持 http(s) 会污染 canvas，导致导出失败或图片空白。
+      try {
+        const abs = src.startsWith('//') ? 'https:' + src : src;
+        img.setAttribute('src', await remoteToDataUrl(abs));
+        img.removeAttribute('srcset');
+      } catch (e) {
+        failed++;
+      }
+      continue;
+    }
     try {
       let rel = src;
       const m = /^app:\/\/[^/]*\/(.*)$/.exec(src);
