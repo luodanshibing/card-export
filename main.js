@@ -852,7 +852,7 @@ async function cardToPngBlob(cardEl, opts) {
   const img = new Image();
   await new Promise((resolve, reject) => {
     img.onload = () => resolve();
-    img.onerror = () => reject(new Error('SVG 渲染失败（内容里可能有不受支持的资源）'));
+    img.onerror = () => reject(new Error('SVG 渲染失败：内容里有不受支持的资源'));
     img.src = url;
   });
 
@@ -895,7 +895,7 @@ async function saveBlobToFileDialog(blob, suggestedName, defaultDir, promptFn) {
   const fs = nodeRequire('fs');
   const path = nodeRequire('path');
   const os = nodeRequire('os');
-  if (!fs || !path) throw new Error('当前环境不支持写入文件系统（手机端请改用"保存到库"）');
+  if (!fs || !path) throw new Error('当前环境不能写文件，请改用"保存到库"');
   const remote = getElectronRemote();
   let desktop = '';
   try {
@@ -980,17 +980,17 @@ class CardExportPlugin extends Plugin {
 
     this.addCommand({
       id: 'export-card',
-      name: '导出为卡片图片（整篇）',
+      name: '导出卡片图片：整篇',
       callback: () => this.openExport({ mode: 'note' }),
     });
     this.addCommand({
       id: 'export-card-selection',
-      name: '导出为卡片图片（选中的内容）',
+      name: '导出卡片图片：选中内容',
       callback: () => this.openExport({ mode: 'selection' }),
     });
     this.addCommand({
       id: 'export-card-headings',
-      name: '导出为卡片图片（按标题切成多张）',
+      name: '导出卡片图片：按标题分张',
       callback: () => this.openExport({ mode: 'headings' }),
     });
 
@@ -1102,7 +1102,7 @@ class CardExportPlugin extends Plugin {
     return new Promise((resolve) => {
       new PathPromptModal(this.app, {
         title: '保存到文件',
-        description: '当前环境拿不到系统保存对话框，请直接填完整路径（含文件名）。默认已给到桌面。',
+        description: '拿不到系统保存对话框，请填完整路径',
         value: defaultPath,
         onSubmit: (p) => resolve(p),
         onCancel: () => resolve(null),
@@ -1263,7 +1263,7 @@ class CardExportModal extends Modal {
     // 元素
     panel.createEl('h4', { text: '元素' });
     this.row('头像', (r) => {
-      const i = r.createEl('input', { type: 'text', placeholder: '库内图片路径（可空）' });
+      const i = r.createEl('input', { type: 'text', placeholder: '库内图片路径' });
       i.value = s.avatar;
       i.addEventListener('change', async () => { s.avatar = i.value.trim(); await this.plugin.saveSettings(); await this.renderPreview(); });
     });
@@ -1660,7 +1660,7 @@ class CardExportSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('默认尺寸')
-      .setDesc('自适应长图随内容变高；固定尺寸装不下时自动切成多张，绝不裁掉内容。')
+      .setDesc('长图随内容变高；固定尺寸装不下时自动分成多张。')
       .addDropdown((d) => {
         for (const z of SIZES) d.addOption(z.id, z.name);
         d.setValue(s.defaultSize).onChange(async (v) => {
@@ -1683,7 +1683,7 @@ class CardExportSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('同时另存为文件')
-      .setDesc('导出时再弹一次系统保存对话框（可选桌面等任意位置）。')
+      .setDesc('导出时再弹一次系统保存对话框。')
       .addToggle((t) =>
         t.setValue(!!s.saveToFile).onChange(async (v) => {
           s.saveToFile = v;
@@ -1692,8 +1692,8 @@ class CardExportSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName('导出目录（库内）')
-      .setDesc('留空 = 与笔记同目录。填相对路径（如 附件/卡片）时目录会自动创建。')
+      .setName('导出目录')
+      .setDesc('留空则与笔记同目录。相对路径示例：附件/卡片')
       .addText((t) =>
         t.setPlaceholder('留空 = 与笔记同目录').setValue(s.outputFolder).onChange(async (v) => {
           s.outputFolder = v.trim();
@@ -1702,8 +1702,8 @@ class CardExportSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName('上次另存目录')
-      .setDesc('「另存为」对话框的默认位置，成功保存后自动更新。')
+      .setName('另存为的默认位置')
+      .setDesc('另存为对话框的默认位置，保存成功后自动更新。')
       .addText((t) =>
         t.setPlaceholder('（还没有）').setValue(s.lastExportDir).onChange(async (v) => {
           s.lastExportDir = v.trim();
@@ -1716,7 +1716,7 @@ class CardExportSettingTab extends PluginSettingTab {
       .addDropdown((d) =>
         d
           .addOption('1', '1×')
-          .addOption('2', '2×（推荐）')
+          .addOption('2', '2×')
           .addOption('3', '3×')
           .setValue(String(s.scale))
           .onChange(async (v) => {
@@ -1807,7 +1807,7 @@ class CardExportSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('背景类型')
-      .setDesc('跟随主题 = 用主题自带的底色；纯色 / 渐变 / 纹理 / 图片 会覆盖它。')
+      .setDesc('跟随主题用主题底色；其余选项覆盖它')
       .addDropdown((d) => {
         for (const t of BG_TYPES) d.addOption(t.id, t.name);
         d.setValue(s.bgType).onChange(async (v) => {
@@ -1847,7 +1847,7 @@ class CardExportSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('背景图片')
-      .setDesc('库内图片路径；导出时会被内联进图片，不依赖外部文件。')
+      .setDesc('库内图片路径，导出时内联进图片')
       .addText((t) =>
         t.setPlaceholder('如 1 Obsidian/附件/底图.jpg').setValue(s.bgImage).onChange(async (v) => {
           s.bgImage = v.trim();
@@ -1870,8 +1870,8 @@ class CardExportSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName('遮罩浓度（0-90）')
-      .setDesc('在背景图/纹理上叠一层半透明色，压暗或提亮以保证文字可读。')
+      .setName('遮罩浓度')
+      .setDesc('在背景上叠一层半透明色，保证文字可读')
       .addText((t) =>
         t.setValue(String(s.bgVeil)).onChange(async (v) => {
           const n = parseInt(v, 10);
@@ -1914,7 +1914,7 @@ class CardExportSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('自定义 CSS 文件')
-      .setDesc('填库内一份 .css 的路径，会在主题之后追加生效 —— 想微调样式不必改插件代码。')
+      .setDesc('库内 .css 路径，在主题之后追加生效')
       .addText((t) =>
         t.setPlaceholder('例如 1 Obsidian/CSS/卡片.css').setValue(s.customCssFile).onChange(async (v) => {
           s.customCssFile = v.trim();
