@@ -1695,7 +1695,7 @@ class CardExportSettingTab extends PluginSettingTab {
       .setName('导出目录')
       .setDesc('留空则与笔记同目录。相对路径示例：附件/卡片')
       .addText((t) =>
-        t.setPlaceholder('留空 = 与笔记同目录').setValue(s.outputFolder).onChange(async (v) => {
+        t.setPlaceholder('留空则与笔记同目录').setValue(s.outputFolder).onChange(async (v) => {
           s.outputFolder = v.trim();
           await this.plugin.saveSettings();
         })
@@ -1713,6 +1713,7 @@ class CardExportSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('输出倍率')
+      .setDesc('推荐 2×')
       .addDropdown((d) =>
         d
           .addOption('1', '1×')
@@ -1871,7 +1872,7 @@ class CardExportSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('遮罩浓度')
-      .setDesc('在背景上叠一层半透明色，保证文字可读')
+      .setDesc('在背景上叠一层半透明色，保证文字可读。范围 0-90')
       .addText((t) =>
         t.setValue(String(s.bgVeil)).onChange(async (v) => {
           const n = parseInt(v, 10);
